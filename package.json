@@ -1,0 +1,12 @@
+{
+  "name": "vmurf-voice-agents-livekit-starter-root",
+  "private": true,
+  "scripts": {
+    "install": "npm i -g pnpm && cd frontend && pnpm install",
+    "build": "cd frontend && pnpm build",
+    "dev": "cd frontend && pnpm dev"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
