@@ -1,8 +1,7 @@
 {
-  "buildCommand": "pnpm install && pnpm build",
-  "outputDirectory": ".next",
+  "buildCommand": "cd frontend && pnpm install && pnpm build",
+  "outputDirectory": "frontend/.next",
   "framework": "nextjs",
-  "installCommand": "pnpm install",
-  "devCommand": "pnpm dev",
-  "rootDirectory": "frontend"
+  "installCommand": "cd frontend && pnpm install",
+  "devCommand": "cd frontend && pnpm dev"
 }
