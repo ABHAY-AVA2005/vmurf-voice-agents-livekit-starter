@@ -1,4 +1,6 @@
+import asyncio
 import logging
+import re
 
 from dotenv import load_dotenv
 from livekit import rtc
@@ -57,6 +59,36 @@ def prewarm(proc: JobProcess):
 server.setup_fnc = prewarm
 
 
+def normalize_stop_word(text: str) -> str:
+    return re.sub(r"[^\w\s]", "", text.lower()).strip()
+
+
+def is_stop_request(transcript: str) -> bool:
+    if not transcript:
+        return False
+
+    normalized = normalize_stop_word(transcript)
+    stop_words = {
+        "en": {"stop", "cancel", "pause", "end", "quit", "enough", "donot", "dont"},
+        "te": {"aagu", "nilupu", "nillu", "nilichu", "nilipinchi"},
+    }
+    stop_phrases = {
+        "stop speaking",
+        "dont speak",
+        "do not speak",
+        "aagu",
+        "nilupu",
+        "nillu",
+    }
+
+    words = set(normalized.split())
+    if words & stop_words["en"]:
+        return True
+    if words & stop_words["te"]:
+        return True
+    return any(phrase in normalized for phrase in stop_phrases)
+
+
 @server.rtc_session(agent_name="my-agent")
 async def my_agent(ctx: JobContext):
     # Logging setup
@@ -92,6 +124,20 @@ async def my_agent(ctx: JobContext):
         # See more at https://docs.livekit.io/agents/build/audio/#preemptive-generation
         preemptive_generation=True,
     )
+
+    def on_user_input_transcribed(event):
+        if not event.is_final:
+            return
+
+        transcript = getattr(event, "transcript", "")
+        if is_stop_request(transcript):
+            logger.info("Stop request detected, interrupting current speech")
+            try:
+                asyncio.create_task(session.interrupt(force=True))
+            except Exception:
+                logger.exception("Failed to interrupt session on stop request")
+
+    session.on("user_input_transcribed", on_user_input_transcribed)
 
     # To use a realtime model instead of a voice pipeline, use the following session setup instead.
     # (Note: This is for the OpenAI Realtime API. For other providers, see https://docs.livekit.io/agents/models/realtime/))
