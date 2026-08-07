@@ -47,7 +47,14 @@ COPY . .
 # Pre-download any ML models or files the agent needs
 # This ensures the container is ready to run immediately without downloading
 # dependencies at runtime, which improves startup time and reliability
-RUN uv run "src/agent.py" download-files
+#
+# The generic `download-files` CLI command does not reliably pre-fetch the
+# turn-detector model assets (e.g. languages.json), so we explicitly import
+# and instantiate the MultilingualModel here. Doing this with an absolute
+# path to the venv's Python (via `uv run --no-sync`) guarantees the virtual
+# environment created by `uv sync` above is used and the downloaded model
+# files are cached inside the image at /app.
+RUN uv run --no-sync /app/.venv/bin/python -c "from livekit.plugins.turn_detector.multilingual import MultilingualModel; MultilingualModel()"
 
 # --- Production stage ---
 # Build tools (gcc, g++, python3-dev) are not included in the final image
