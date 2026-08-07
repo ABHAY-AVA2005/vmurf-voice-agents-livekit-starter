@@ -1,8 +1,9 @@
 'use client';
 
+import { useState } from 'react';
 import { useTheme } from 'next-themes';
 import { AnimatePresence, motion } from 'motion/react';
-import { useSessionContext } from '@livekit/components-react';
+import { useAgent, useSessionContext } from '@livekit/components-react';
 import type { AppConfig } from '@/app-config';
 import { AgentSessionView_01 } from '@/components/agents-ui/blocks/agent-session-view-01';
 import { WelcomeView } from '@/components/app/welcome-view';
@@ -34,7 +35,40 @@ interface ViewControllerProps {
 
 export function ViewController({ appConfig }: ViewControllerProps) {
   const { isConnected, start } = useSessionContext();
+  const agent = useAgent();
+  const [isStarting, setIsStarting] = useState(false);
+  const [startError, setStartError] = useState<string | null>(null);
   const { resolvedTheme } = useTheme();
+
+  const startCall = async () => {
+    setStartError(null);
+    setIsStarting(true);
+    try {
+      await start();
+    } catch (error) {
+      setStartError(error instanceof Error ? error.message : String(error));
+    } finally {
+      setIsStarting(false);
+    }
+  };
+
+  const statusMessage = startError
+    ? `Unable to start voice session: ${startError}`
+    : isStarting
+    ? 'Connecting to the voice service...'
+    : agent.state === 'connecting'
+    ? 'Setting up the agent...'
+    : agent.state === 'pre-connect-buffering'
+    ? 'Preparing audio. Please wait a moment.'
+    : agent.state === 'failed'
+    ? 'Agent connection failed. Please retry.'
+    : agent.isConnected && agent.canListen
+    ? 'Connected and ready. Speak now.'
+    : agent.isConnected
+    ? 'Connected. Waiting for your voice.'
+    : 'Tap the button to start the voice session.';
+
+  const statusTone = startError ? 'error' : agent.state === 'failed' ? 'error' : agent.isConnected ? 'success' : 'default';
 
   return (
     <AnimatePresence mode="wait">
@@ -44,7 +78,11 @@ export function ViewController({ appConfig }: ViewControllerProps) {
           key="welcome"
           {...VIEW_MOTION_PROPS}
           startButtonText={appConfig.startButtonText}
-          onStartCall={start}
+          onStartCall={startCall}
+          isStarting={isStarting}
+          statusMessage={statusMessage}
+          statusTone={statusTone}
+          agentState={agent.state}
         />
       )}
       {/* Session view */}

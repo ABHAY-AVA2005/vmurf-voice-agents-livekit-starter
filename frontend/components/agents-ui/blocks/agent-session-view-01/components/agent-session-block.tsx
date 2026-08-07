@@ -207,7 +207,7 @@ export function AgentSessionView_01({
       <Fade top className="absolute inset-x-4 top-0 z-10 h-40" />
       {/* transcript */}
 
-      <div className="absolute top-0 bottom-[135px] flex w-full flex-col md:bottom-[170px]">
+      <div className="absolute inset-x-0 top-0 bottom-[calc(5.5rem+2.5rem)] flex w-full flex-col md:bottom-[calc(6.5rem+3rem)]">
         <AnimatePresence>
           {chatOpen && (
             <motion.div

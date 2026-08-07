@@ -108,7 +108,7 @@ function AgentChatInput({ chatOpen, onSend = async () => {}, className }: AgentC
   }, [chatOpen]);
 
   return (
-    <div className={cn('mb-3 flex grow items-end gap-2 rounded-md pl-1 text-sm', className)}>
+    <div className={cn('mb-3 flex w-full flex-col gap-2 rounded-2xl text-sm sm:flex-row sm:items-end', className)}>
       <textarea
         autoFocus
         ref={inputRef}
@@ -117,7 +117,7 @@ function AgentChatInput({ chatOpen, onSend = async () => {}, className }: AgentC
         placeholder="Type something..."
         onKeyDown={handleKeyDown}
         onChange={(e) => setMessage(e.target.value)}
-        className="field-sizing-content max-h-16 min-h-8 flex-1 resize-none py-2 [scrollbar-width:thin] focus:outline-none disabled:cursor-not-allowed disabled:opacity-50"
+        className="field-sizing-content min-h-[5rem] w-full resize-none rounded-2xl border border-border/70 bg-background/80 px-4 py-3 text-sm leading-6 outline-none transition focus:border-primary/70 focus:ring-2 focus:ring-primary/20 disabled:cursor-not-allowed disabled:opacity-50"
       />
       <Button
         size="icon"
@@ -298,7 +298,7 @@ export function AgentControlBar({
         {...MOTION_PROPS}
         inert={!(isChatOpen || isChatOpenUncontrolled)}
         animate={isChatOpen || isChatOpenUncontrolled ? 'visible' : 'hidden'}
-        className="border-input/50 flex w-full items-start overflow-hidden border-b"
+        className="border-input/50 flex w-full items-start overflow-hidden border-b pb-3"
       >
         <AgentChatInput
           chatOpen={isChatOpen || isChatOpenUncontrolled}
@@ -307,8 +307,8 @@ export function AgentControlBar({
         />
       </motion.div>
 
-      <div className="flex gap-1">
-        <div className="flex grow gap-1">
+      <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center">
+        <div className="flex flex-wrap gap-2 grow">
           {/* Toggle Microphone */}
           {visibleControls.microphone && (
             <AgentTrackControl

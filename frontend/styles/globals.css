@@ -115,10 +115,22 @@
 }
 
 @layer base {
+  html {
+    scroll-behavior: smooth;
+  }
+
   * {
     @apply border-foreground/20 outline-ring/50;
   }
+
   body {
-    @apply bg-background text-foreground;
+    @apply min-h-screen bg-background text-foreground;
+  }
+
+  button,
+  input,
+  textarea,
+  select {
+    font: inherit;
   }
 }

@@ -19,42 +19,41 @@ const ANIMATION_TRANSITION: MotionProps['transition'] = {
 };
 
 const tileViewClassNames = {
-  // GRID
-  // 2 Columns x 3 Rows
   grid: [
     'h-full w-full',
-    'grid gap-x-2 place-content-center',
-    'grid-cols-[1fr_1fr] grid-rows-[90px_1fr_90px]',
+    'grid gap-4 place-content-center',
+    'grid-cols-1 grid-rows-[auto_1fr]',
+    'sm:grid-cols-[1fr_1fr] sm:grid-rows-[90px_1fr_90px]',
   ],
-  // Agent
-  // chatOpen: true,
-  // hasSecondTile: true
-  // layout: Column 1 / Row 1
-  // align: x-end y-center
-  agentChatOpenWithSecondTile: ['col-start-1 row-start-1', 'self-center justify-self-end'],
-  // Agent
-  // chatOpen: true,
-  // hasSecondTile: false
-  // layout: Column 1 / Row 1 / Column-Span 2
-  // align: x-center y-center
-  agentChatOpenWithoutSecondTile: ['col-start-1 row-start-1', 'col-span-2', 'place-content-center'],
-  // Agent
-  // chatOpen: false
-  // layout: Column 1 / Row 1 / Column-Span 2 / Row-Span 3
-  // align: x-center y-center
-  agentChatClosed: ['col-start-1 row-start-1', 'col-span-2 row-span-3', 'place-content-center'],
-  // Second tile
-  // chatOpen: true,
-  // hasSecondTile: true
-  // layout: Column 2 / Row 1
-  // align: x-start y-center
-  secondTileChatOpen: ['col-start-2 row-start-1', 'self-center justify-self-start'],
-  // Second tile
-  // chatOpen: false,
-  // hasSecondTile: false
-  // layout: Column 2 / Row 2
-  // align: x-end y-end
-  secondTileChatClosed: ['col-start-2 row-start-3', 'place-content-end'],
+  agentChatOpenWithSecondTile: [
+    'col-start-1 row-start-1',
+    'self-center justify-self-center',
+    'sm:self-center sm:justify-self-end',
+  ],
+  agentChatOpenWithoutSecondTile: [
+    'col-start-1 row-start-1',
+    'col-span-1',
+    'place-content-center',
+    'sm:col-span-2',
+  ],
+  agentChatClosed: [
+    'col-start-1 row-start-1',
+    'col-span-1',
+    'row-span-1',
+    'place-content-center',
+    'sm:col-span-2',
+    'sm:row-span-3',
+  ],
+  secondTileChatOpen: [
+    'col-start-1 row-start-2',
+    'self-center justify-self-center',
+    'sm:col-start-2 sm:row-start-1 sm:self-center sm:justify-self-start',
+  ],
+  secondTileChatClosed: [
+    'col-start-1 row-start-2',
+    'place-content-center',
+    'sm:col-start-2 sm:row-start-2 place-content-end',
+  ],
 };
 
 export function useLocalTrackRef(source: Track.Source) {
@@ -106,8 +105,8 @@ export function TileLayout({
   const videoHeight = agentVideoTrack?.publication.dimensions?.height ?? 0;
 
   return (
-    <div className="absolute inset-x-0 top-8 bottom-32 z-50 md:top-12 md:bottom-40">
-      <div className="relative mx-auto h-full max-w-2xl px-4 md:px-0">
+    <div className="absolute inset-x-0 top-16 bottom-32 z-50 px-2 sm:top-20 md:top-24 md:bottom-40">
+      <div className="relative mx-auto h-full max-w-2xl px-2 md:px-0">
         <div className={cn(tileViewClassNames.grid)}>
           {/* Agent */}
           <div
@@ -189,15 +188,15 @@ export function TileLayout({
                     },
                   }}
                   className={cn(
-                    'overflow-hidden bg-black drop-shadow-xl/80',
-                    chatOpen ? 'h-[90px]' : 'h-auto w-full'
+                    'overflow-hidden bg-black drop-shadow-xl/80 rounded-3xl',
+                    chatOpen ? 'h-[220px] w-full max-w-[420px]' : 'h-auto w-full sm:w-auto'
                   )}
                 >
                   <VideoTrack
                     width={videoWidth}
                     height={videoHeight}
                     trackRef={agentVideoTrack}
-                    className={cn(chatOpen && 'size-[90px] object-cover')}
+                    className="h-full w-full rounded-3xl object-cover"
                   />
                 </motion.div>
               )}
