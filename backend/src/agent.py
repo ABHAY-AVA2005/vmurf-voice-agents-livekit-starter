@@ -1,5 +1,7 @@
 import asyncio
+import importlib.util
 import logging
+import os
 import re
 
 from dotenv import load_dotenv
@@ -16,11 +18,21 @@ from livekit.agents import (
     room_io,
 )
 from livekit.plugins import murf, silero, google, deepgram, noise_cancellation
-from livekit.plugins.turn_detector.multilingual import MultilingualModel
+
+MultilingualModel = None
+TORCH_AVAILABLE = importlib.util.find_spec("torch") is not None
+try:
+    if TORCH_AVAILABLE:
+        from livekit.plugins.turn_detector.multilingual import MultilingualModel
+except ImportError:
+    MultilingualModel = None
 
 logger = logging.getLogger("agent")
 
 load_dotenv(".env.local")
+
+AGENT_NAME = os.getenv("AGENT_NAME") or "my-agent"
+logger.info("Using backend agent name: %s", AGENT_NAME)
 
 # Change this prompt to change what your voice agent does.
 # See README.md for example prompts (customer support, language tutor, receptionist).
@@ -89,7 +101,7 @@ def is_stop_request(transcript: str) -> bool:
     return any(phrase in normalized for phrase in stop_phrases)
 
 
-@server.rtc_session(agent_name="my-agent")
+@server.rtc_session(agent_name=AGENT_NAME)
 async def my_agent(ctx: JobContext):
     # Logging setup
     # Add any other context you want in all log entries here
@@ -118,11 +130,13 @@ async def my_agent(ctx: JobContext):
             ),
         # VAD and turn detection are used to determine when the user is speaking and when the agent should respond
         # See more at https://docs.livekit.io/agents/build/turns
-        turn_detection=MultilingualModel(),
+        turn_detection=MultilingualModel() if MultilingualModel is not None else None,
         vad=ctx.proc.userdata["vad"],
         # allow the LLM to generate a response while waiting for the end of turn
         # See more at https://docs.livekit.io/agents/build/audio/#preemptive-generation
         preemptive_generation=True,
+        # close the session if the user is silent for more than 1 minute after the agent stops speaking
+        user_away_timeout=60.0,
     )
 
     def on_user_input_transcribed(event):
@@ -138,6 +152,13 @@ async def my_agent(ctx: JobContext):
                 logger.exception("Failed to interrupt session on stop request")
 
     session.on("user_input_transcribed", on_user_input_transcribed)
+
+    def on_user_state_changed(event):
+        if event.new_state == "away":
+            logger.info("User was silent for 60 seconds, shutting down the session.")
+            asyncio.create_task(session.shutdown(drain=True))
+
+    session.on("user_state_changed", on_user_state_changed)
 
     # To use a realtime model instead of a voice pipeline, use the following session setup instead.
     # (Note: This is for the OpenAI Realtime API. For other providers, see https://docs.livekit.io/agents/models/realtime/))
