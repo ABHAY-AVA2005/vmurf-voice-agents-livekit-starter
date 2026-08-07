@@ -79,12 +79,12 @@ export default async function RootLayout({ children }: RootLayoutProps) {
               className="flex items-center gap-3 transition-transform duration-300 hover:scale-[1.02]"
             >
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={logo} alt={`${companyName} Logo`} className="block h-8 w-auto dark:hidden" />
+              <img src={logo} alt={`${companyName} Logo`} className="block h-8 w-8 object-cover dark:hidden" />
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img
                 src={logoDark ?? logo}
                 alt={`${companyName} Logo`}
-                className="hidden h-8 w-auto dark:block"
+                className="hidden h-8 w-8 object-cover dark:block"
               />
             </a>
             <span className="text-foreground font-mono text-[0.65rem] font-bold uppercase tracking-[0.35em]">

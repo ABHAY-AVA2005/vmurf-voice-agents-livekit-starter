@@ -6,7 +6,7 @@ function WelcomeImage() {
     <img
       src="/swastya_seva.png"
       alt="Swastika Seva Sanstha logo"
-      className="h-16 w-16 rounded-3xl object-contain"
+      className="h-16 w-16 object-cover"
     />
   );
 }
