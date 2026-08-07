@@ -3,6 +3,5 @@
   "framework": "nextjs",
   "installCommand": "npm i -g pnpm && pnpm install",
   "outputDirectory": ".next",
-  "devCommand": "pnpm dev",
-  "root": "frontend"
+  "devCommand": "pnpm dev"
 }
