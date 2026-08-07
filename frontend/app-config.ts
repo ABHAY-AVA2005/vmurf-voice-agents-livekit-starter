@@ -67,9 +67,6 @@ export const APP_CONFIG_DEFAULTS: AppConfig = {
   // agent dispatch configuration
   agentName: process.env.AGENT_NAME ?? undefined,
 
-  logo: '/swastika-logo.svg',
-  logoDark: '/swastika-logo.svg',
-
   // LiveKit Cloud Sandbox configuration
   sandboxId: undefined,
 };
