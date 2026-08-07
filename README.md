@@ -127,6 +127,13 @@ You should now see the voice agent UI. Click **Start talking**, allow microphone
 Want to deploy this beyond localhost? You'll need to deploy **two services**: the backend agent and the frontend. Both must use the same LiveKit project.
 
 > This is a two-service app — the backend agent and the frontend UI deploy separately. You'll need both running and connected to the same LiveKit project.
+>
+> **Important:** Vercel can only host the frontend UI. The backend agent is a long-running Python process that keeps a live connection to LiveKit, so it cannot be fully deployed on Vercel.
+
+### What goes where
+
+- `frontend/` → deploy on Vercel
+- `backend/` → deploy on Railway, Render, DigitalOcean App Platform, Fly.io, or another host that supports persistent Python services
 
 ### Backend (Python agent) — Deploy to Railway
 
