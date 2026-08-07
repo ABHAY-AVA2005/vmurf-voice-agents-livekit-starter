@@ -42,9 +42,9 @@ export const APP_CONFIG_DEFAULTS: AppConfig = {
   supportsScreenShare: true,
   isPreConnectBufferEnabled: true,
 
-  logo: '/swastika-logo.svg',
+  logo: '/swastya_seva.png',
   accent: '#10B981', // green accent for health
-  logoDark: '/swastika-logo.svg',
+  logoDark: '/swastya_seva.png',
   accentDark: '#34D399',
   startButtonText: 'Talk to Sevika',
 

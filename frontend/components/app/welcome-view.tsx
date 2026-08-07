@@ -4,7 +4,7 @@ function WelcomeImage() {
   return (
     // eslint-disable-next-line @next/next/no-img-element
     <img
-      src="/swastika-logo.svg"
+      src="/swastya_seva.png"
       alt="Swastika Seva Sanstha logo"
       className="h-16 w-16 rounded-3xl object-contain"
     />
