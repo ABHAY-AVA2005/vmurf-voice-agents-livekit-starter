@@ -1,6 +1,8 @@
 {
-  "buildCommand": "if [ -f frontend/package.json ]; then cd frontend && pnpm install && pnpm build; else pnpm install && pnpm build; fi",
+  "buildCommand": "pnpm install && pnpm build",
   "framework": "nextjs",
-  "installCommand": "npm i -g pnpm && if [ -f frontend/package.json ]; then cd frontend && pnpm install; else pnpm install; fi",
-  "devCommand": "if [ -f frontend/package.json ]; then cd frontend && pnpm dev; else pnpm dev; fi"
+  "installCommand": "npm i -g pnpm && pnpm install",
+  "outputDirectory": ".next",
+  "devCommand": "pnpm dev",
+  "root": "frontend"
 }
